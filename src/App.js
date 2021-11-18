@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import './App.css';
+import SearchBar from './components/Searchbar/Searchbar';
 
 class App extends Component {
   state = {
@@ -21,8 +22,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.state.loading && <h1>Loading...</h1>}
-        {this.state.images && <div>Pokemon</div>}
+        <SearchBar />
+        {/* {this.state.loading && <h1>Loading...</h1>}
+        {this.state.images && <div>Pokemon</div>} */}
       </div>
     );
   }
