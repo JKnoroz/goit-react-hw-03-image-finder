@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import s from './Searchbar.module.css';
 import { BiSearch } from 'react-icons/bi';
+import { toast } from 'react-toastify';
 
 export default class SearchBar extends Component {
   state = {
@@ -14,8 +15,7 @@ export default class SearchBar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.searchRequest.trim() === '') {
-      alert('Put in image name');
-      return;
+      return toast.error('Put in image name');
     }
 
     this.props.onSubmit(this.state.searchRequest);

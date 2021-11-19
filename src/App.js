@@ -1,23 +1,25 @@
 import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
+
+import ImageGallery from './components/ImageGallery/ImageGallery';
 
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import SearchBar from './components/Searchbar/Searchbar';
 
 class App extends Component {
   state = {
     searchRequest: '',
+    images: [],
     loading: false,
   };
 
-  // componentDidMount() {
-  //   this.setState({ loading: true });
-  //   fetch(
-  //     'https://pixabay.com/api/?q=cat&page=1&key=22088587-b9222ac51e20698a54a4430fc&image_type=photo&orientation=horizontal&per_page=12',
-  //   )
-  //     .then(res => res.json())
-  //     .then(images => this.setState({ images }))
-  //     .finally(() => this.setState({ loading: false }));
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.searchRequest !== this.props.searchRequest) {
+      console.log(prevState.searchRequest);
+      console.log(this.state.searchRequest);
+    }
+  }
 
   handleFormSubmit = searchRequest => {
     this.setState({ searchRequest });
@@ -27,8 +29,9 @@ class App extends Component {
     return (
       <div className="App">
         <SearchBar onSubmit={this.handleFormSubmit} />
-        {/* {this.state.loading && <h1>Loading...</h1>}
-        {this.state.images && <div>Pokemon</div>} */}
+
+        <ImageGallery images={this.state.images} />
+        <ToastContainer autoClose={3000} />
       </div>
     );
   }
