@@ -5,10 +5,10 @@ const ImageGalleryItem = ({ webformatURL, largeImageURL, tags }) => {
   return (
     <li className={s.ImageGalleryItem}>
       <img
-        className={s.ImageGalleryItem_image}
         src={webformatURL}
         alt={tags}
         data-source={largeImageURL}
+        className={s.ImageGalleryItemImage}
       />
     </li>
   );

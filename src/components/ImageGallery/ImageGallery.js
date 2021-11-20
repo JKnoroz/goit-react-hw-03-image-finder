@@ -8,7 +8,8 @@ const ImageGallery = ({ images }) => {
       {images.map(({ id, webformatURL, tags, largeImageURL }) => (
         <ImageGalleryItem
           key={id}
-          image={webformatURL}
+          id={id}
+          webformatURL={webformatURL}
           tags={tags}
           largeImageURL={largeImageURL}
         />
