@@ -8,6 +8,7 @@ import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
 import SearchBar from './components/Searchbar/Searchbar';
 import imagesAPI from './services/images-api';
+import Button from './components/Button/Button';
 
 class App extends Component {
   state = {
@@ -15,23 +16,36 @@ class App extends Component {
     images: [],
     error: null,
     status: 'idle',
+    page: 1,
   };
 
   componentDidUpdate(prevProps, prevState) {
     const prevRequest = prevState.searchRequest;
     const nextRequest = this.state.searchRequest;
-    if (prevRequest !== nextRequest) {
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
+    if (prevRequest !== nextRequest || prevPage !== nextPage) {
+      console.log(prevPage);
+      console.log(nextPage);
       this.setState({ status: 'pending', images: [] });
       imagesAPI
-        .fetchImages(nextRequest)
+        .fetchImages(nextRequest, nextPage)
         .then(({ hits }) => hits)
-        .then(images => this.setState({ images, status: 'resolved' }))
+        .then(images =>
+          this.setState({ images, status: 'resolved', page: nextPage }),
+        )
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
 
   handleFormSubmit = searchRequest => {
     this.setState({ searchRequest });
+  };
+
+  handleLoadMore = () => {
+    const prevPage = this.state.page;
+    const nextPage = prevPage + 1;
+    this.setState({ page: nextPage });
   };
 
   render() {
@@ -44,6 +58,7 @@ class App extends Component {
         {status === 'pending' && <Loader type="Circles" color="#3f51b5" />}
         {status === 'rejected' && <div>{error.message}</div>}
         {status === 'resolved' && <ImageGallery images={images} />}
+        <Button onLoadMore={this.handleLoadMore} />
         <ToastContainer autoClose={3000} />
       </div>
     );
