@@ -32,7 +32,10 @@ class App extends Component {
         .fetchImages(nextRequest, nextPage)
         .then(({ hits }) => hits)
         .then(images =>
-          this.setState({ images, status: 'resolved', page: nextPage }),
+          this.setState({
+            images: [...prevState.images, ...images],
+            status: 'resolved',
+          }),
         )
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
