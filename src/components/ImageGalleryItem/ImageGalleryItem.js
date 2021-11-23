@@ -10,11 +10,11 @@ const ImageGalleryItem = ({
   return (
     <li className={s.ImageGalleryItem}>
       <img
-        onClick={showBigImg}
         src={webformatURL}
         alt={tags}
         data-source={largeImageURL}
         className={s.ImageGalleryItemImage}
+        onClick={showBigImg}
       />
     </li>
   );

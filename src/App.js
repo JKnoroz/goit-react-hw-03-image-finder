@@ -19,6 +19,7 @@ class App extends Component {
     status: 'idle',
     page: 1,
     showModal: false,
+    bigImg: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -27,9 +28,6 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
     if (prevRequest !== nextRequest || prevPage !== nextPage) {
-      console.log(prevPage);
-      console.log(nextPage);
-
       this.setState({ status: 'pending', images: [] });
       imagesAPI
         .fetchImages(nextRequest, nextPage)
@@ -64,12 +62,14 @@ class App extends Component {
     }));
   };
 
-  handleImgClick = e => {
-    console.log(e.target);
+  handleImgClick = bigImg => {
+    console.log(bigImg);
+    this.setState({ bigImg });
+    this.toggleModal();
   };
 
   render() {
-    const { images, error, status, page, showModal } = this.state;
+    const { images, error, status, page, showModal, bigImg } = this.state;
 
     return (
       <div className="App">
@@ -86,7 +86,9 @@ class App extends Component {
         {images.length > 0 && images.length / 12 < page && (
           <div>No more images</div>
         )}
-        {showModal && <Modal onClose={this.toggleModal}></Modal>}
+        {showModal && (
+          <Modal onClose={this.toggleModal} bigImg={bigImg}></Modal>
+        )}
         <ToastContainer autoClose={3000} />
       </div>
     );
