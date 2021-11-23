@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Loader from 'react-loader-spinner';
 
 import ImageGallery from './components/ImageGallery/ImageGallery';
@@ -20,6 +21,7 @@ class App extends Component {
     page: 1,
     showModal: false,
     bigImg: '',
+    tags: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -27,13 +29,24 @@ class App extends Component {
     const nextRequest = this.state.searchRequest;
     const prevPage = prevState.page;
     const nextPage = this.state.page;
+
     if (prevRequest !== nextRequest || prevPage !== nextPage) {
       this.setState({ status: 'pending', images: [] });
       imagesAPI
         .fetchImages(nextRequest, nextPage)
-        .then(({ hits }) => hits)
+        .then(({ hits }) => {
+          if (hits.length === 0) {
+            toast.info("Ups. We haven't found any images !", {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+          return hits;
+        })
         .then(images => {
-          if (nextPage === 1) {
+          if (nextPage === 1 && images.length > 0) {
+            toast.success('Wow! You found great photos!', {
+              position: toast.POSITION.BOTTOM_CENTER,
+            });
             this.setState({ images, status: 'resolved' });
           } else {
             this.setState({
@@ -60,16 +73,23 @@ class App extends Component {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
+    this.clearModalProps();
   };
 
-  handleImgClick = bigImg => {
-    console.log(bigImg);
-    this.setState({ bigImg });
+  clearModalProps = () => {
+    const { bigImg, tags } = this.state;
+    if ((bigImg, tags)) {
+      this.setState({ bigImg: '', tags: '' });
+    }
+  };
+
+  handleImgClick = (bigImg, tags) => {
+    this.setState({ bigImg, tags });
     this.toggleModal();
   };
 
   render() {
-    const { images, error, status, page, showModal, bigImg } = this.state;
+    const { images, error, status, page, showModal, bigImg, tags } = this.state;
 
     return (
       <div className="App">
@@ -87,7 +107,7 @@ class App extends Component {
           <div>No more images</div>
         )}
         {showModal && (
-          <Modal onClose={this.toggleModal} bigImg={bigImg}></Modal>
+          <Modal onClose={this.toggleModal} bigImg={bigImg} tags={tags}></Modal>
         )}
         <ToastContainer autoClose={3000} />
       </div>

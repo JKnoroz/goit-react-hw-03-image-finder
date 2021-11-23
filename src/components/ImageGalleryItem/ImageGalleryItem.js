@@ -12,7 +12,6 @@ const ImageGalleryItem = ({
       <img
         src={webformatURL}
         alt={tags}
-        data-source={largeImageURL}
         className={s.ImageGalleryItemImage}
         onClick={showBigImg}
       />
