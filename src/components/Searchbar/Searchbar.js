@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import s from './Searchbar.module.css';
 import { BiSearch } from 'react-icons/bi';
 import { toast } from 'react-toastify';
@@ -15,9 +16,8 @@ export default class SearchBar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.searchRequest.trim() === '') {
-      return toast.error('Put in image name');
+      return toast.error('Enter your search request, please');
     }
-
     this.props.onSubmit(this.state.searchRequest);
     this.setState({ searchRequest: '' });
   };
@@ -27,9 +27,8 @@ export default class SearchBar extends Component {
       <header className={s.Searchbar} onSubmit={this.handleSubmit}>
         <form className={s.SearchForm}>
           <button type="submit" className={s.SearchFormButton}>
-            <span className={s.SearchFormButtonLabel}>
-              <BiSearch />
-            </span>
+            <span className={s.SearchFormButtonLabel}>Seach</span>
+            <BiSearch className={s.SearchIcon} />
           </button>
 
           <input
@@ -46,3 +45,7 @@ export default class SearchBar extends Component {
     );
   }
 }
+
+SearchBar.propTypes = {
+  searchRequest: PropTypes.string,
+};

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import s from './ImageGallery.module.css';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 
@@ -15,6 +16,11 @@ const ImageGallery = ({ images, showBigImg }) => {
       ))}
     </ul>
   );
+};
+
+ImageGallery.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.object),
+  showBigImg: PropTypes.func,
 };
 
 export default ImageGallery;

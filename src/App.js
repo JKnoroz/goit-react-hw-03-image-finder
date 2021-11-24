@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
-import Loader from 'react-loader-spinner';
-
-import ImageGallery from './components/ImageGallery/ImageGallery';
+import { animateScroll as scroll } from 'react-scroll';
 
 import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
+
 import SearchBar from './components/Searchbar/Searchbar';
 import imagesAPI from './services/images-api';
+import LoaderSpinner from './components/Loader/Loader';
+import ImageGallery from './components/ImageGallery/ImageGallery';
 import Button from './components/Button/Button';
 import Modal from './components/Modal/Modal';
 
@@ -30,16 +31,15 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
+    if (!nextRequest) {
+      this.setState({ images: [], status: 'idle' });
+    }
+
     if (prevRequest !== nextRequest || prevPage !== nextPage) {
       this.setState({ status: 'pending', images: [] });
       imagesAPI
         .fetchImages(nextRequest, nextPage)
         .then(({ hits }) => {
-          if (hits.length === 0) {
-            toast.info("Ups. We haven't found any images !", {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          }
           return hits;
         })
         .then(images => {
@@ -48,6 +48,13 @@ class App extends Component {
               position: toast.POSITION.BOTTOM_CENTER,
             });
             this.setState({ images, status: 'resolved' });
+          } else if (images.length === 0) {
+            this.setState({
+              images: [],
+              status: 'rejected',
+              error: 'images not found',
+            });
+            toast.info('No images found');
           } else {
             this.setState({
               images: [...prevState.images, ...images],
@@ -61,12 +68,14 @@ class App extends Component {
 
   handleFormSubmit = searchRequest => {
     this.setState({ searchRequest, page: 1 });
+    console.log(this.state.searchRequest);
   };
 
   handleLoadMore = () => {
     const prevPage = this.state.page;
     const nextPage = prevPage + 1;
     this.setState({ page: nextPage });
+    this.scroll();
   };
 
   toggleModal = () => {
@@ -76,6 +85,11 @@ class App extends Component {
     this.clearModalProps();
   };
 
+  handleImgClick = (bigImg, tags) => {
+    this.setState({ bigImg, tags });
+    this.toggleModal();
+  };
+
   clearModalProps = () => {
     const { bigImg, tags } = this.state;
     if ((bigImg, tags)) {
@@ -83,9 +97,8 @@ class App extends Component {
     }
   };
 
-  handleImgClick = (bigImg, tags) => {
-    this.setState({ bigImg, tags });
-    this.toggleModal();
+  scroll = () => {
+    scroll.scrollToBottom();
   };
 
   render() {
@@ -95,7 +108,7 @@ class App extends Component {
       <div className="App">
         <SearchBar onSubmit={this.handleFormSubmit} />
         {status === 'idle' && null}
-        {status === 'pending' && <Loader type="Circles" color="#3f51b5" />}
+        {status === 'pending' && <LoaderSpinner />}
         {status === 'rejected' && <div>{error.message}</div>}
         {status === 'resolved' && (
           <ImageGallery images={images} showBigImg={this.handleImgClick} />

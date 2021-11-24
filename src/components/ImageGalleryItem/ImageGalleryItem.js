@@ -1,12 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import s from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({
-  webformatURL,
-  largeImageURL,
-  tags,
-  showBigImg,
-}) => {
+const ImageGalleryItem = ({ webformatURL, tags, showBigImg }) => {
   return (
     <li className={s.ImageGalleryItem}>
       <img
@@ -17,6 +13,12 @@ const ImageGalleryItem = ({
       />
     </li>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  webformatURL: PropTypes.string,
+  tags: PropTypes.string,
+  showBigImg: PropTypes.func,
 };
 
 export default ImageGalleryItem;

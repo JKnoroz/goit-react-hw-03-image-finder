@@ -84,3 +84,10 @@
   font: inherit;
   font-size: 18px;
 }
+
+.SearchIcon {
+  width: 30px;
+  height: 30px;
+  fill: slategrey;
+  margin-top: 6px;
+}
