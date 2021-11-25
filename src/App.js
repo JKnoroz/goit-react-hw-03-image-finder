@@ -31,10 +31,6 @@ class App extends Component {
     const prevPage = prevState.page;
     const nextPage = this.state.page;
 
-    if (!nextRequest) {
-      this.setState({ images: [], status: 'idle' });
-    }
-
     if (prevRequest !== nextRequest || prevPage !== nextPage) {
       this.setState({ status: 'pending', images: [] });
       imagesAPI
@@ -68,7 +64,6 @@ class App extends Component {
 
   handleFormSubmit = searchRequest => {
     this.setState({ searchRequest, page: 1 });
-    console.log(this.state.searchRequest);
   };
 
   handleLoadMore = () => {
@@ -108,20 +103,27 @@ class App extends Component {
       <div className="App">
         <SearchBar onSubmit={this.handleFormSubmit} />
         {status === 'idle' && null}
+
         {status === 'pending' && <LoaderSpinner />}
-        {status === 'rejected' && <div>{error.message}</div>}
+
+        {status === 'rejected' && <div>{error}</div>}
+
         {status === 'resolved' && (
           <ImageGallery images={images} showBigImg={this.handleImgClick} />
         )}
+
         {images.length > 0 && images.length / 12 === page && (
           <Button onLoadMore={this.handleLoadMore} />
         )}
+
         {images.length > 0 && images.length / 12 < page && (
           <div>No more images</div>
         )}
+
         {showModal && (
           <Modal onClose={this.toggleModal} bigImg={bigImg} tags={tags}></Modal>
         )}
+
         <ToastContainer autoClose={3000} />
       </div>
     );

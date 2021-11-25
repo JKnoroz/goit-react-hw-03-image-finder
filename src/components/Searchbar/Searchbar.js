@@ -16,7 +16,10 @@ export default class SearchBar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     if (this.state.searchRequest.trim() === '') {
-      return toast.error('Enter your search request, please');
+      toast.error('Enter your search request, please', {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
     }
     this.props.onSubmit(this.state.searchRequest);
     this.setState({ searchRequest: '' });
