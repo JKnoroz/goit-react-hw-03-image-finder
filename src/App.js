@@ -52,10 +52,15 @@ class App extends Component {
             });
             toast.info('No images found');
           } else {
-            this.setState({
-              images: [...prevState.images, ...images],
-              status: 'resolved',
-            });
+            console.log(this.state.images);
+            console.log(images);
+            const imgsGallery = [...prevState.images, ...images];
+            this.setState({ images: imgsGallery, status: 'resolved' });
+
+            // this.setState({
+            //   images: [...prevState.images, ...images],
+            //   status: 'resolved',
+            // });
           }
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
