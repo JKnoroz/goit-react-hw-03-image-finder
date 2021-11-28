@@ -38,10 +38,13 @@ class App extends Component {
           if (hits.length === 0) {
             toast.info('No images found');
           }
-          this.setState(prevState => ({
-            status: 'resolved',
-            images: [...prevState.images, ...hits],
-          }));
+          this.setState(
+            prevState => ({
+              status: 'resolved',
+              images: [...prevState.images, ...hits],
+            }),
+            () => scroll.scrollToBottom(),
+          );
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
@@ -56,7 +59,6 @@ class App extends Component {
       page: prevState.page + 1,
       status: 'pending',
     }));
-    scroll.scrollToBottom();
   };
 
   toggleModal = () => {
@@ -76,23 +78,23 @@ class App extends Component {
     return (
       <div className="App">
         <SearchBar onSubmit={this.handleFormSubmit} />
+
         {status === 'idle' && null}
 
-        {status === 'resolved' && (
-          <>
-            <ImageGallery images={images} showBigImg={this.handleImgClick} />
-            {images.length >= 12 && <Button onLoadMore={this.handleLoadMore} />}
-          </>
+        {(status === 'resolved' || status === 'pending') && (
+          <ImageGallery images={images} showBigImg={this.handleImgClick} />
         )}
 
         {status === 'pending' && <LoaderSpinner />}
 
-        {status === 'rejected' && <div>{error}</div>}
+        {status === 'resolved' && images.length >= 12 && (
+          <Button onLoadMore={this.handleLoadMore} />
+        )}
 
+        {status === 'rejected' && <div>{error}</div>}
         {showModal && (
           <Modal onClose={this.toggleModal} bigImg={bigImg} tags={tags}></Modal>
         )}
-
         <ToastContainer autoClose={3000} />
       </div>
     );
